@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fintrack.api.dto.request.CategoryRequestDTO;
-import com.fintrack.api.dto.request.CategoryResponseDTO;
+import com.fintrack.api.dto.response.CategoryResponseDTO;
 import com.fintrack.api.service.CategoryService;
 
 import jakarta.validation.Valid;

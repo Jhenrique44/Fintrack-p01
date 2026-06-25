@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.fintrack.api.dto.request.CategoryRequestDTO;
-import com.fintrack.api.dto.request.CategoryResponseDTO;
+import com.fintrack.api.dto.response.CategoryResponseDTO;
 import com.fintrack.api.entity.Category;
 import com.fintrack.api.entity.User;
 import com.fintrack.api.exception.BusinessException;

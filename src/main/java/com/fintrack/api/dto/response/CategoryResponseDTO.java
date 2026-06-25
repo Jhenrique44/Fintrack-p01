@@ -1,4 +1,4 @@
-package com.fintrack.api.dto.request;
+package com.fintrack.api.dto.response;
 
 import com.fintrack.api.entity.TransactionType;
 
