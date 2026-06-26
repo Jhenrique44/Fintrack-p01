@@ -1,7 +1,9 @@
 package com.fintrack.api.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fintrack.api.dto.request.TransactionRequestDTO;
+import com.fintrack.api.dto.response.BalanceResponseDTO;
 import com.fintrack.api.dto.response.TransactionResponseDTO;
 import com.fintrack.api.service.TransactionService;
 
@@ -43,5 +46,12 @@ public class TransactionController {
         transactionService.deleteTransaction(userId, id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/balance")
+    public ResponseEntity<BalanceResponseDTO> getBalance(@RequestParam Long userId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        return ResponseEntity.ok(transactionService.getBalance(userId, startDate, endDate));
     }
 }
