@@ -19,3 +19,7 @@ spring:
 
 server:
   port: 8080
+
+jwt:
+  secret: "fintrack-super-secreta-chave-de-pelo-menos-32-caracteres-2026"
+  expiration: 86400000 # 24 horas em milissegundos

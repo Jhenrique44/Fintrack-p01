@@ -3,7 +3,9 @@ package com.fintrack.api.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.fintrack.api.dto.request.LoginRequestDTO;
 import com.fintrack.api.dto.request.UserRequestDTO;
+import com.fintrack.api.dto.response.LoginResponseDTO;
 import com.fintrack.api.dto.response.UserResponseDTO;
 import com.fintrack.api.entity.User;
 import com.fintrack.api.exception.BusinessException;
@@ -18,6 +20,7 @@ public class UserService {
     
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
         
@@ -43,5 +46,23 @@ public class UserService {
                           .createdAt(user.getCreatedAt())
                           .build();
     }
-    
+
+
+    public LoginResponseDTO login(LoginRequestDTO request) { 
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new BusinessException("Invalid credentials"));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new BusinessException("Invalid credentials");
+        }
+
+        String token = jwtService.generateToken(user.getId(), user.getEmail());
+
+        return LoginResponseDTO.builder()
+                .token(token)
+                .userId(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .build();
+    }
 }
