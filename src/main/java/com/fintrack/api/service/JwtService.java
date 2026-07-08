@@ -2,6 +2,8 @@ package com.fintrack.api.service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.SecretKey;
 
@@ -27,13 +29,19 @@ public class JwtService {
 
     public String generateToken(
             Long userId, String email) {
-        Date now = new Date();
-        Date expireDate = new Date(now.getTime() + expiration);
+        long nowMillis = System.currentTimeMillis();
+        Date now = new Date(nowMillis);
+        Date expireDate = new Date(nowMillis + expiration);
+
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", userId);
+        claims.put("sub", email);
+        claims.put("iat", now);
+        claims.put("exp", expireDate);
 
         return Jwts.builder()
-                .subject(email)
-                .claim("userId", userId)
-                .issuedAt(expireDate)
+                .claims(claims)
                 .signWith(getSigningKey())
                 .compact();
     }
@@ -55,11 +63,15 @@ public class JwtService {
         return extractAllClaims(token).getSubject();
     }
 
+
     public boolean isTokenValid(String token) {
         try {
             Claims claims = extractAllClaims(token);
-            return !claims.getExpiration().before(new Date());
+            Date expiration = claims.getExpiration();
+            if(expiration == null) return false;
+            return !expiration.before(new Date());
         } catch (Exception e) {
+            // System.err.println("Token validation error: " + e.getMessage());
             return false;
         }
     }
