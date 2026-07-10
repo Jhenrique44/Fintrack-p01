@@ -17,17 +17,23 @@ import com.fintrack.api.dto.request.CategoryRequestDTO;
 import com.fintrack.api.dto.response.CategoryResponseDTO;
 import com.fintrack.api.service.CategoryService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
+@Tag(name = "Category Management", description = "Endpoints for managing categories")
+@SecurityRequirement(name = "Bearer Authentication")
 public class CategoryController {
 
     private final CategoryService categoryService;
 
     @PostMapping
+    @Operation(summary = "Create Category")
     public ResponseEntity<CategoryResponseDTO> create(
             @Valid @RequestBody CategoryRequestDTO request) {
 
@@ -36,6 +42,7 @@ public class CategoryController {
     }
 
     @GetMapping
+    @Operation(summary = "Find All Categories from User")
     public ResponseEntity<List<CategoryResponseDTO>> findAlll() {
 
         Long userId = SecurityUtils.getCurrentUserId();
@@ -43,6 +50,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete Category")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         Long userId = SecurityUtils.getCurrentUserId();
         categoryService.delete(userId, id);

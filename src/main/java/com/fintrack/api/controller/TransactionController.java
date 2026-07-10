@@ -21,17 +21,23 @@ import com.fintrack.api.dto.response.BalanceResponseDTO;
 import com.fintrack.api.dto.response.TransactionResponseDTO;
 import com.fintrack.api.service.TransactionService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/transactions")
 @RequiredArgsConstructor
+@Tag(name = "Transactions", description = "Endpoints for managing transactions")
+@SecurityRequirement(name = "Bearer Authentication")
 public class TransactionController {
 
     private final TransactionService transactionService;
 
     @PostMapping
+    @Operation(summary = "Create Transaction")
     public ResponseEntity<TransactionResponseDTO> createTransaction(
             @Valid @RequestBody TransactionRequestDTO request) {
 
@@ -40,6 +46,7 @@ public class TransactionController {
     }
 
     @GetMapping
+    @Operation(summary = "Find All Transactions from User")
     public ResponseEntity<List<TransactionResponseDTO>> findAllTransactions() {
     
         Long userId = SecurityUtils.getCurrentUserId();
@@ -48,6 +55,7 @@ public class TransactionController {
 
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete Transaction")
     public ResponseEntity<Void> deleteTransaction( @PathVariable Long id) {
         Long userId = SecurityUtils.getCurrentUserId();
         transactionService.deleteTransaction(userId, id);
@@ -57,6 +65,7 @@ public class TransactionController {
 
 
     @GetMapping("/balance")
+    @Operation(summary = "Get Balance", description = "Get the balance of transactions for the authenticated user within a specified date range")
     public ResponseEntity<BalanceResponseDTO> getBalance(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
